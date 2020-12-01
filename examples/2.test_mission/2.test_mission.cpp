@@ -44,11 +44,10 @@ int main(int argc, char** argv)
     if(set_rate_result != Telemetry::Result::Success){return 1;}
 
     double lat, lon;
-
     telemetry -> subscribe_position([&lat, &lon](Telemetry::Position position){   // 고도를 모니터링하기 위한 콜백함수, 익명함수
-            // std::cout << "Altitude: " << position.relative_altitude_m << "m" << std::endl;  
-            lat = position.latitude_deg;
+            lat = position.latitude_deg;    // 현제 좌표 
             lon = position.longitude_deg;
+            // std::cout << "Altitude: " << position.relative_altitude_m << "m" << std::endl;  
             // std::cout << "lat: " << lat << " deg";
             // std::cout << " lon: " << lon << " deg" << std::endl; 
     });
@@ -63,7 +62,7 @@ int main(int argc, char** argv)
     //==============================================================================================
     std::vector<Mission::MissionItem> mission_items;
     Mission::MissionItem mission_item;
-    const double center_lat=lat, center_lon=lon; // 기준점
+    const double center_lat=lat, center_lon=lon; // 기준점, 현재 위치의 좌표를 받아 기준점을 만든다.
     int max = 45, n_circle = 3;   //한바퀴당 미션 수, 회전 수
     double limit = n_circle*max, w; 
     for(int j = 0; j < n_circle;j++){
@@ -72,7 +71,7 @@ int main(int argc, char** argv)
             mission_item.latitude_deg = center_lat + w*0.0004*sin(i*2*PI/max );    // 범위: -90 to +90
             mission_item.longitude_deg = center_lon + w*0.0004*cos(i*2*PI/max );    // 범위: -180 to +180
             mission_item.relative_altitude_m = 10.0f;    // takeoff altitude
-            mission_item.speed_m_s = 27.77777777777777777777777777778f; //시속 100km/s
+            mission_item.speed_m_s = 27.77777777777777777777777777778f; //단위 m/s, 시속 100km/s
             mission_item.is_fly_through = true;   
             mission_items.push_back(mission_item);
         }
@@ -127,9 +126,8 @@ int main(int argc, char** argv)
     // 4.return_to_launch
     //==============================================================================================
     {
-        // We are done, and can do RTL to go home.
         std::cout << "return_to_launch..." << std::endl;
-        const Action::Result result = action->return_to_launch();
+        const Action::Result result = action->return_to_launch();   // 집으로...
         if (result != Action::Result::Success) {
             std::cout << "Failed return to launch" << std::endl;
         }
