@@ -7,7 +7,8 @@
 #include <thread>
 using namespace mavsdk;
 
-bool offboard_ctrl_body(std::shared_ptr<mavsdk::Offboard>);
+bool offboard_ctrl_body_attitude(std::shared_ptr<mavsdk::Offboard>);
+bool offboard_ctrl_body_velocity(std::shared_ptr<mavsdk::Offboard> );
 
 int main(int argc, char** argv)
 {   //==============================================================================================
@@ -68,16 +69,20 @@ int main(int argc, char** argv)
         std::cout << "Take off failed: " << takeoff_result << std::endl;
         return 1;
     }
+    std::this_thread::sleep_for(std::chrono::seconds(10));
     //==============================================================================================
     // offboard
     //==============================================================================================
     auto offboard = std::make_shared<Offboard>(system);
-    bool ret = offboard_ctrl_body(offboard);
+    // bool ret = offboard_ctrl_body_attitude(offboard);
+    bool ret = offboard_ctrl_body_velocity(offboard);
+
     if(ret==false){return -1;}
+
     //==============================================================================================
     // land
     //==============================================================================================
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    std::this_thread::sleep_for(std::chrono::seconds(5));
     std::cout << "Landing..." << std::endl;
     const Action::Result land_result = action -> land();    // 랜딩
 
@@ -95,14 +100,31 @@ int main(int argc, char** argv)
     return 0;
 }
 
-bool offboard_ctrl_body(std::shared_ptr<mavsdk::Offboard> offboard){
+bool offboard_ctrl_body_attitude(std::shared_ptr<mavsdk::Offboard> offboard){
     Offboard::Attitude control_stick{};
     offboard -> set_attitude(control_stick);
     Offboard::Result offboard_reult = offboard -> start();
     if(offboard_reult != Offboard::Result::Success){return 1;}
+
     control_stick.roll_deg = 30.0f;
     control_stick.thrust_value = 0.6f;
+
     offboard -> set_attitude(control_stick);
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    offboard_reult = offboard -> stop();
+    return true;
+}
+
+bool offboard_ctrl_body_velocity(std::shared_ptr<mavsdk::Offboard> offboard){
+    Offboard::VelocityBodyYawspeed control_stick{};
+    offboard -> set_velocity_body(control_stick);
+    Offboard::Result offboard_reult = offboard -> start();
+    if(offboard_reult != Offboard::Result::Success){return 1;}
+
+    control_stick.down_m_s = 0.0f;
+    control_stick.yawspeed_deg_s = 160.0f;
+
+    offboard -> set_velocity_body(control_stick);
     std::this_thread::sleep_for(std::chrono::seconds(5));
     offboard_reult = offboard -> stop();
     return true;
