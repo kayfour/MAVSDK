@@ -58,22 +58,23 @@ int main(int argc, char** argv)
     }
     //==============================================================================================
     // 1.add mission and check mission size
+    // add try own mission plan
+    // 원형 골뱅이 이동 미션 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     //==============================================================================================
     std::vector<Mission::MissionItem> mission_items;
     Mission::MissionItem mission_item;
-    const double center_lat=lat, center_lon=lon;
-    int max = 45;
-    double limit = 3*max, w;
-    for(int j = 0; j < 3;j++){
+    const double center_lat=lat, center_lon=lon; // 기준점
+    int max = 45, n_circle = 3;   //한바퀴당 미션 수, 회전 수
+    double limit = n_circle*max, w; 
+    for(int j = 0; j < n_circle;j++){
         for(int i = 0; i<max+1; i++){
-            w = (limit--)/(3*max);
+            w = (limit--)/(n_circle*max);   // 가중치, 중심으로 부터 점점 감소하며 원형으로 비행
             mission_item.latitude_deg = center_lat + w*0.0004*sin(i*2*PI/max );    // 범위: -90 to +90
             mission_item.longitude_deg = center_lon + w*0.0004*cos(i*2*PI/max );    // 범위: -180 to +180
             mission_item.relative_altitude_m = 10.0f;    // takeoff altitude
-            mission_item.speed_m_s = 27.77777777777777777777777777778f;
-            mission_item.is_fly_through = true;    // 비행 안하고 정지
-
-            mission_items.push_back(mission_item);  // 미션 웨이포인트를 items에 저장
+            mission_item.speed_m_s = 27.77777777777777777777777777778f; //시속 100km/s
+            mission_item.is_fly_through = true;   
+            mission_items.push_back(mission_item);
         }
     }
     std::cout << "Mission size: " << mission_items.size() << std::endl;
