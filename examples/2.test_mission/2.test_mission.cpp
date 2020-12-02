@@ -8,7 +8,7 @@
 #include <future>
 #include <math.h>
 using namespace mavsdk;
-#define PI 3.1415926535897
+#define PI 3.14159265358979323846
 
 int main(int argc, char** argv)
 {   //==============================================================================================
