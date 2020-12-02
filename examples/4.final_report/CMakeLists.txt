@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10.2)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(${PROJECT_NAME})
+project(4.final_report)
 
 if(NOT MSVC)
     add_definitions("-Wall -Wextra")
@@ -13,11 +13,11 @@ endif()
 
 find_package(MAVSDK REQUIRED)
 
-add_executable(${PROJECT_NAME}
-${PROJECT_NAME}.cpp
+add_executable(4.final_report
+4.final_report.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(4.final_report
     MAVSDK::mavsdk_telemetry
     MAVSDK::mavsdk_action
     MAVSDK::mavsdk

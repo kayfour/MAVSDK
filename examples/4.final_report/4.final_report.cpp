@@ -22,19 +22,19 @@ void make_mission_point(std::vector<Mission::MissionItem> &mission_items, double
 }
 // 장애물 지점의 좌표를 입력하고 진입 각도(seta, radian)를 입력하면 
 // 장애물을 중심으로 일정 거리를 두고 반원으로 비행하며 회피
-void collision_avoidence_point(std::vector<Mission::MissionItem> &mission_items, 
+void collision_avoidance_point(std::vector<Mission::MissionItem> &mission_items, 
                         double point_x_obstacle,            // 장애물의 x 좌표
                         double point_y_obstacle,            // 장애물의 y 좌표
                         double seta,                        // 진입 각도, radian
                         int mision_num = 15,                // 미션의 수
-                        double radius_avoidance = 0.0002)   // 장애물 중심부로부터 거리
+                        double radius_avoidance = 0.00015)   // 장애물 중심부로부터 거리
                         {  
     int max = mision_num;
     double tmp_x, tmp_y, r=radius_avoidance;  // 원의 임시 포인트와 반지름(물체 중심점과 유지하는 거리)
 
     for(int i=0; i<max+1; i++){
         tmp_x = point_x_obstacle + r*sin(seta + i*PI/max ); // 한바퀴면 (360*i/max) * PI / 180
-        tmp_y = point_y_obstacle + r*cos(seta + i*PI/max ); // 하지만 반바퀴이므로 (180*i/max) * PI / 180
+        tmp_y = point_y_obstacle + 1.5*r*cos(seta + i*PI/max ); // 하지만 반바퀴이므로 (180*i/max) * PI / 180
         make_mission_point(mission_items, tmp_x, tmp_y);
     }
 }
@@ -101,7 +101,7 @@ int main(int argc, char** argv)
     //기본 삼각형 비행, point1과 point2 사이에 장애물
     make_mission_point(mission_items, point_x1, point_y1);  //삼각형 point1
     double seta = atan((point_y1-point_y_obstacle)/(point_x1-point_x_obstacle));    // 진입각도 계산, radian
-    collision_avoidence_point(mission_items, point_x_obstacle, point_y_obstacle, seta); // 장애물 회피
+    collision_avoidance_point(mission_items, point_x_obstacle, point_y_obstacle, seta); // 장애물 회피
     make_mission_point(mission_items, point_x2, point_y2);  //삼각형 point2
     make_mission_point(mission_items, point_x3, point_y3);  //삼각형 point3
 
