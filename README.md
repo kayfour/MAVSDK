@@ -1,4 +1,4 @@
-## QgroundControl 
+## QgroundControl project avoidance 
 ## https://github.com/blackcoke/MAVSDK/tree/master/examples/4.final_report
 
 
